@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <NoWin32Manifest>true</NoWin32Manifest>
+    <PlatformTarget>x86</PlatformTarget>
+    <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <StartupObject>SteamUserData.Program</StartupObject>
+    <AssemblyName>Steam-User-Data-Querier</AssemblyName>
+    <ApplicationIcon>978.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="978.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="NinjaMagisk.Interface">
+      <HintPath>..\..\NinjaMagisk\NinjaMagisk\bin\Debug\NinjaMagisk.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+</Project>
