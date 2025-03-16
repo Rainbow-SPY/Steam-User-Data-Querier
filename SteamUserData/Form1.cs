@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -172,10 +173,25 @@ namespace SteamUserData
             textBox12.Leave += TextBox_Leave;
             textBox13.Leave += TextBox_Leave;
             textBox14.Leave += TextBox_Leave;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            button4.Enabled = false;
         }
 
         private async void Button1_Click(object sender, EventArgs e)
         {
+            // 将所有 TextBox 控件放入一个数组
+            TextBox[] textBoxes = { textBox1, textBox2, textBox5, textBox4, textBox3, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
+
+            // 遍历数组并设置 ReadOnly 属性
+            foreach (var textBox in textBoxes)
+            {
+                if (textBox == textBox1)
+                    continue;
+                textBox.Clear();
+                textBox.Enabled = false;
+            }
+
             string SteamID = textBox1.Text;
             var steamType = await NinjaMagisk.API.SteamUserData(SteamID);
             if (steamType != null)
@@ -185,17 +201,24 @@ namespace SteamUserData
                 textBox4.Text = steamType.steamID3;
                 textBox3.Text = steamType.steamID64;
                 textBox6.Text = steamType.communitystate;
-                textBox7.Text = steamType.realname;
+                if (steamType.realname == "N\\/A")
+                    textBox7.Text = steamType.realname.Replace("N\\/A", "未知");
+                else
+                    textBox7.Text = steamType.realname;
                 textBox8.Text = steamType.profileurl.Replace("\\/", "/");
                 textBox9.Text = steamType.avatar.Replace("\\/", "/");
                 textBox10.Text = steamType.accountcreationdate;
                 textBox11.Text = steamType.lastlogoff;
-                textBox12.Text = steamType.location;
+                if (steamType.realname == "N\\/A")
+                    textBox12.Text = steamType.location.Replace("N\\/A", "未知");
+                else
+                    textBox12.Text = steamType.location;
                 textBox13.Text = steamType.onlinestatus;
                 textBox14.Text = steamType.friendcode;
+                button2.Enabled = true;
+                button3.Enabled = true;
+                button4.Enabled = true;
 
-                // 将所有 TextBox 控件放入一个数组
-                TextBox[] textBoxes = { textBox2, textBox5, textBox4, textBox3, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
 
                 // 遍历数组并设置 ReadOnly 属性
                 foreach (var textBox in textBoxes)
@@ -206,7 +229,6 @@ namespace SteamUserData
             else
             {
                 // 将所有 TextBox 控件放入一个数组
-                TextBox[] textBoxes = { textBox1, textBox2, textBox5, textBox4, textBox3, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
 
                 // 遍历数组并设置 ReadOnly 属性
                 foreach (var textBox in textBoxes)
@@ -215,10 +237,12 @@ namespace SteamUserData
                     if (textBox == textBox1)
                         continue;
                     textBox.Enabled = false;
+                    button2.Enabled = false;
+                    button3.Enabled = false;
+                    button4.Enabled = false;
                 }
             }
         }
-        // 通用事件处理程序
 
         private void TextBox_Leave(object sender, EventArgs e)
         {
@@ -295,6 +319,11 @@ namespace SteamUserData
 
         private void Button2_Click(object sender, EventArgs e)
         {
+            if (textBox1.Text == "" || textBox9.Text == "")
+            {
+                MessageBox.Show("请输入SteamID64请求数据后,再进行保存", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             string Text = $"SteamID: {textBox5.Text}\n" +
                 $"SteamID3: {textBox4.Text}\n" +
                 $"SteamID64: {textBox3.Text}\n" +
@@ -310,12 +339,40 @@ namespace SteamUserData
             var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"Steam User {textBox3.Text}`s Data.txt");
             if (!File.Exists(file) || File.Exists(file))
                 File.Create(file).Close();
-
-
             StreamWriter sw = new StreamWriter(file);
             sw.Write(Text);
             sw.Close();
             sw.Dispose();
+        }
+        private void Button3_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "" || textBox9.Text == "")
+            {
+                MessageBox.Show("请输入SteamID64请求数据后,再进行查看头像", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            Form form = new Form
+            {
+                Text = "Steam 头像查看器",
+                Width = 500,
+                Height = 500,
+                StartPosition = FormStartPosition.CenterScreen,
+                Icon = this.Icon,
+                BackgroundImage = this.BackgroundImage,
+                BackgroundImageLayout = this.BackgroundImageLayout
+
+            };
+            WebBrowser webBrowser2 = new WebBrowser();
+            form.Controls.Add(webBrowser2);
+            webBrowser2.Navigate(textBox9.Text);
+            webBrowser2.Dock = DockStyle.Fill;
+            form.ShowDialog();
+            form.FormClosed += (s, args) => form.Dispose();
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            Process.Start(textBox8.Text);
         }
     }
 }

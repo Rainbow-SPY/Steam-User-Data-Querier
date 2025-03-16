@@ -11,6 +11,11 @@
     <StartupObject>SteamUserData.Program</StartupObject>
     <AssemblyName>Steam-User-Data-Querier</AssemblyName>
     <ApplicationIcon>978.ico</ApplicationIcon>
+    <Version>v1.0-released</Version>
+    <Authors>Rainbow SPY</Authors>
+    <Company>Rainbow SPY</Company>
+    <FileVersion>v1.0.0.25316-released</FileVersion>
+    <AssemblyVersion>1.5.9205.5957</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>none</DebugType>
@@ -26,5 +31,18 @@
       <HintPath>..\..\NinjaMagisk\NinjaMagisk\bin\Debug\NinjaMagisk.Interface.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resource1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource1.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resource1.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
