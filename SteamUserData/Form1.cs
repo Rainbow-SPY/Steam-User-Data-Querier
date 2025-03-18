@@ -11,11 +11,6 @@ namespace SteamUserData
         {
             InitializeComponent();
         }
-        /// <summary>
-        /// 查询Steam用户信息
-        /// </summary>
-        /// <param name="SteamID">SteamID,通常以7656为开头</param>
-        /// <returns></returns>
         //public static async void SteamUserData(string SteamID)
         //{
         //    // 创建HttpClient实例
@@ -183,6 +178,7 @@ namespace SteamUserData
             // 将所有 TextBox 控件放入一个数组
             TextBox[] textBoxes = { textBox1, textBox2, textBox5, textBox4, textBox3, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14 };
 
+            label18.Visible = true; // 显示加载提示
             // 遍历数组并设置 ReadOnly 属性
             foreach (var textBox in textBoxes)
             {
@@ -196,6 +192,7 @@ namespace SteamUserData
             var steamType = await NinjaMagisk.API.SteamUserData(SteamID);
             if (steamType != null)
             {
+                label18.Visible = false; // 隐藏加载提示
                 textBox2.Text = steamType.username;
                 textBox5.Text = steamType.steamID;
                 textBox4.Text = steamType.steamID3;
@@ -207,8 +204,14 @@ namespace SteamUserData
                     textBox7.Text = steamType.realname;
                 textBox8.Text = steamType.profileurl.Replace("\\/", "/");
                 textBox9.Text = steamType.avatar.Replace("\\/", "/");
-                textBox10.Text = steamType.accountcreationdate;
-                textBox11.Text = steamType.lastlogoff;
+                if (steamType.accountcreationdate == "1970-01-01 08:00:00")
+                    textBox10.Text = steamType.accountcreationdate.Replace("1970-01-01 08:00:00", "未知");
+                else
+                    textBox10.Text = steamType.accountcreationdate;
+                if (steamType.lastlogoff == "1970-01-01 08:00:00")
+                    textBox11.Text = steamType.lastlogoff.Replace("1970-01-01 08:00:00", "未知");
+                else
+                    textBox11.Text = steamType.lastlogoff;
                 if (steamType.realname == "N\\/A")
                     textBox12.Text = steamType.location.Replace("N\\/A", "未知");
                 else
@@ -343,6 +346,7 @@ namespace SteamUserData
             sw.Write(Text);
             sw.Close();
             sw.Dispose();
+            MessageBox.Show($"Steam 用户 {textBox2.Text} 的数据已保存到桌面", "保存成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void Button3_Click(object sender, EventArgs e)
         {
@@ -373,6 +377,18 @@ namespace SteamUserData
         private void Button4_Click(object sender, EventArgs e)
         {
             Process.Start(textBox8.Text);
+        }
+
+        private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                // 阻止默认行为（换行和提示音）
+                e.Handled = true;
+
+                // 触发 Button1 的点击事件
+                button1.PerformClick();
+            }
         }
     }
 }
