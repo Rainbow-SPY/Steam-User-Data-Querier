@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using static Rox.Runtimes.LogLibraries;
 using static Rox.Runtimes.LocalizedString;
-using System.Diagnostics;
+using static Rox.Runtimes.LogLibraries;
 namespace SteamUserData
 {
     internal static class Program
@@ -23,8 +23,8 @@ namespace SteamUserData
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
             WriteLog.Info(LogKind.Form, _PROCESS_STARTED + Process.GetCurrentProcess().Id);
+            Application.Run(new Form1());
         }
         [DllImport("kernel32.dll")]
         private static extern IntPtr GetConsoleWindow();
