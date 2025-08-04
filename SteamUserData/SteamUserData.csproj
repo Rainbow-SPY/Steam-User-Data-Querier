@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -29,8 +29,17 @@
     <Content Include="978.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="NinjaMagisk.Interface">
-      <HintPath>..\..\NinjaMagisk\NinjaMagisk\bin\Debug\NinjaMagisk.Interface.dll</HintPath>
+    <Reference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <HintPath>..\..\Microsoft.Toolkit.Uwp.Notifications.dll</HintPath>
+    </Reference>
+    <Reference Include="Rox.API">
+      <HintPath>..\..\..\$Release\Rox\Rox.API.dll</HintPath>
+    </Reference>
+    <Reference Include="Rox.GameExpansionFeatures">
+      <HintPath>..\..\..\$Release\Rox\Rox.GameExpansionFeatures.dll</HintPath>
+    </Reference>
+    <Reference Include="Rox.Runtimes">
+      <HintPath>..\..\..\$Release\Rox\Rox.Runtimes.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
   </ItemGroup>

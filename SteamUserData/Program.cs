@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
+using static Rox.Runtimes.LogLibraries;
+using static Rox.Runtimes.LocalizedString;
+using System.Diagnostics;
 namespace SteamUserData
 {
     internal static class Program
@@ -13,9 +14,24 @@ namespace SteamUserData
         [STAThread]
         static void Main()
         {
+            // 初始隐藏控制台
+            IntPtr consoleHandle = GetConsoleWindow();
+            if (consoleHandle != IntPtr.Zero)
+            {
+                ShowWindow(consoleHandle, SW_HIDE);
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+            WriteLog.Info(LogKind.Form, _PROCESS_STARTED + Process.GetCurrentProcess().Id);
         }
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        private const int SW_HIDE = 0;
     }
 }
