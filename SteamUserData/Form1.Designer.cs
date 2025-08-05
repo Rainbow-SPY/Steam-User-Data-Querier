@@ -71,6 +71,7 @@
             this.btnToggleConsole = new System.Windows.Forms.Button();
             this.ThookGroup = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -104,7 +105,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button1.Font = new System.Drawing.Font("微软雅黑", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.button1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button1.Location = new System.Drawing.Point(351, 662);
+            this.button1.Location = new System.Drawing.Point(351, 684);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(102, 34);
             this.button1.TabIndex = 3;
@@ -148,7 +149,7 @@
             this.TsteamID64.Enabled = false;
             this.TsteamID64.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TsteamID64.HideSelection = false;
-            this.TsteamID64.Location = new System.Drawing.Point(171, 364);
+            this.TsteamID64.Location = new System.Drawing.Point(171, 386);
             this.TsteamID64.Name = "TsteamID64";
             this.TsteamID64.ReadOnly = true;
             this.TsteamID64.Size = new System.Drawing.Size(238, 26);
@@ -162,7 +163,7 @@
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label4.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label4.Location = new System.Drawing.Point(28, 364);
+            this.label4.Location = new System.Drawing.Point(28, 386);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(93, 21);
             this.label4.TabIndex = 2;
@@ -175,7 +176,7 @@
             this.TsteamID3.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.TsteamID3.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TsteamID3.HideSelection = false;
-            this.TsteamID3.Location = new System.Drawing.Point(171, 332);
+            this.TsteamID3.Location = new System.Drawing.Point(171, 354);
             this.TsteamID3.Name = "TsteamID3";
             this.TsteamID3.ReadOnly = true;
             this.TsteamID3.Size = new System.Drawing.Size(238, 26);
@@ -189,7 +190,7 @@
             this.label5.BackColor = System.Drawing.Color.Transparent;
             this.label5.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label5.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label5.Location = new System.Drawing.Point(28, 332);
+            this.label5.Location = new System.Drawing.Point(28, 354);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(84, 21);
             this.label5.TabIndex = 2;
@@ -229,7 +230,7 @@
             this.TcommunityLook.Enabled = false;
             this.TcommunityLook.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TcommunityLook.HideSelection = false;
-            this.TcommunityLook.Location = new System.Drawing.Point(171, 524);
+            this.TcommunityLook.Location = new System.Drawing.Point(171, 546);
             this.TcommunityLook.Name = "TcommunityLook";
             this.TcommunityLook.ReadOnly = true;
             this.TcommunityLook.Size = new System.Drawing.Size(128, 26);
@@ -241,7 +242,7 @@
             this.label6.BackColor = System.Drawing.Color.Transparent;
             this.label6.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label6.Location = new System.Drawing.Point(28, 524);
+            this.label6.Location = new System.Drawing.Point(28, 546);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(106, 21);
             this.label6.TabIndex = 2;
@@ -255,7 +256,7 @@
             this.TrealName.Enabled = false;
             this.TrealName.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TrealName.HideSelection = false;
-            this.TrealName.Location = new System.Drawing.Point(171, 396);
+            this.TrealName.Location = new System.Drawing.Point(171, 418);
             this.TrealName.Name = "TrealName";
             this.TrealName.ReadOnly = true;
             this.TrealName.Size = new System.Drawing.Size(238, 26);
@@ -269,7 +270,7 @@
             this.label8.BackColor = System.Drawing.Color.Transparent;
             this.label8.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label8.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label8.Location = new System.Drawing.Point(28, 396);
+            this.label8.Location = new System.Drawing.Point(28, 418);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(74, 21);
             this.label8.TabIndex = 2;
@@ -284,7 +285,7 @@
             this.Turl.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Turl.ForeColor = System.Drawing.Color.RoyalBlue;
             this.Turl.HideSelection = false;
-            this.Turl.Location = new System.Drawing.Point(171, 428);
+            this.Turl.Location = new System.Drawing.Point(171, 450);
             this.Turl.Name = "Turl";
             this.Turl.ReadOnly = true;
             this.Turl.Size = new System.Drawing.Size(238, 26);
@@ -298,7 +299,7 @@
             this.label9.BackColor = System.Drawing.Color.Transparent;
             this.label9.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label9.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label9.Location = new System.Drawing.Point(28, 428);
+            this.label9.Location = new System.Drawing.Point(28, 450);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(106, 21);
             this.label9.TabIndex = 2;
@@ -313,7 +314,7 @@
             this.Tavator.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Tavator.ForeColor = System.Drawing.Color.RoyalBlue;
             this.Tavator.HideSelection = false;
-            this.Tavator.Location = new System.Drawing.Point(171, 460);
+            this.Tavator.Location = new System.Drawing.Point(171, 482);
             this.Tavator.Name = "Tavator";
             this.Tavator.ReadOnly = true;
             this.Tavator.Size = new System.Drawing.Size(238, 26);
@@ -327,7 +328,7 @@
             this.label10.BackColor = System.Drawing.Color.Transparent;
             this.label10.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label10.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label10.Location = new System.Drawing.Point(28, 460);
+            this.label10.Location = new System.Drawing.Point(28, 482);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(74, 21);
             this.label10.TabIndex = 2;
@@ -341,7 +342,7 @@
             this.TacCreateTime.Enabled = false;
             this.TacCreateTime.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TacCreateTime.HideSelection = false;
-            this.TacCreateTime.Location = new System.Drawing.Point(171, 492);
+            this.TacCreateTime.Location = new System.Drawing.Point(171, 514);
             this.TacCreateTime.Name = "TacCreateTime";
             this.TacCreateTime.ReadOnly = true;
             this.TacCreateTime.Size = new System.Drawing.Size(238, 26);
@@ -355,7 +356,7 @@
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label11.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label11.Location = new System.Drawing.Point(28, 492);
+            this.label11.Location = new System.Drawing.Point(28, 514);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(106, 21);
             this.label11.TabIndex = 2;
@@ -369,7 +370,7 @@
             this.TRegistryRegoin.Enabled = false;
             this.TRegistryRegoin.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TRegistryRegoin.HideSelection = false;
-            this.TRegistryRegoin.Location = new System.Drawing.Point(171, 556);
+            this.TRegistryRegoin.Location = new System.Drawing.Point(171, 578);
             this.TRegistryRegoin.Name = "TRegistryRegoin";
             this.TRegistryRegoin.ReadOnly = true;
             this.TRegistryRegoin.Size = new System.Drawing.Size(128, 26);
@@ -383,7 +384,7 @@
             this.label13.BackColor = System.Drawing.Color.Transparent;
             this.label13.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label13.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label13.Location = new System.Drawing.Point(28, 556);
+            this.label13.Location = new System.Drawing.Point(28, 578);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(74, 21);
             this.label13.TabIndex = 2;
@@ -397,7 +398,7 @@
             this.Tnow.Enabled = false;
             this.Tnow.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Tnow.HideSelection = false;
-            this.Tnow.Location = new System.Drawing.Point(171, 588);
+            this.Tnow.Location = new System.Drawing.Point(171, 610);
             this.Tnow.Name = "Tnow";
             this.Tnow.ReadOnly = true;
             this.Tnow.Size = new System.Drawing.Size(128, 26);
@@ -411,7 +412,7 @@
             this.label14.BackColor = System.Drawing.Color.Transparent;
             this.label14.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label14.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label14.Location = new System.Drawing.Point(28, 588);
+            this.label14.Location = new System.Drawing.Point(28, 610);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(74, 21);
             this.label14.TabIndex = 2;
@@ -425,7 +426,7 @@
             this.TfriendCode.Enabled = false;
             this.TfriendCode.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TfriendCode.HideSelection = false;
-            this.TfriendCode.Location = new System.Drawing.Point(171, 620);
+            this.TfriendCode.Location = new System.Drawing.Point(171, 642);
             this.TfriendCode.Name = "TfriendCode";
             this.TfriendCode.ReadOnly = true;
             this.TfriendCode.Size = new System.Drawing.Size(128, 26);
@@ -439,7 +440,7 @@
             this.label15.BackColor = System.Drawing.Color.Transparent;
             this.label15.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label15.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label15.Location = new System.Drawing.Point(28, 620);
+            this.label15.Location = new System.Drawing.Point(28, 642);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(74, 21);
             this.label15.TabIndex = 2;
@@ -452,7 +453,7 @@
             this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button2.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.button2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button2.Location = new System.Drawing.Point(27, 662);
+            this.button2.Location = new System.Drawing.Point(27, 684);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(102, 34);
             this.button2.TabIndex = 4;
@@ -479,7 +480,7 @@
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button3.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button3.Location = new System.Drawing.Point(243, 662);
+            this.button3.Location = new System.Drawing.Point(243, 684);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(102, 34);
             this.button3.TabIndex = 4;
@@ -493,7 +494,7 @@
             this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.button4.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.button4.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button4.Location = new System.Drawing.Point(139, 662);
+            this.button4.Location = new System.Drawing.Point(139, 684);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(102, 34);
             this.button4.TabIndex = 5;
@@ -519,7 +520,7 @@
             this.label18.BackColor = System.Drawing.Color.Transparent;
             this.label18.Font = new System.Drawing.Font("微软雅黑", 17F);
             this.label18.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label18.Location = new System.Drawing.Point(26, 715);
+            this.label18.Location = new System.Drawing.Point(26, 737);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(215, 30);
             this.label18.TabIndex = 7;
@@ -560,7 +561,7 @@
             this.TsteamID.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.TsteamID.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.TsteamID.HideSelection = false;
-            this.TsteamID.Location = new System.Drawing.Point(171, 300);
+            this.TsteamID.Location = new System.Drawing.Point(171, 322);
             this.TsteamID.Name = "TsteamID";
             this.TsteamID.ReadOnly = true;
             this.TsteamID.Size = new System.Drawing.Size(238, 26);
@@ -574,7 +575,7 @@
             this.label20.BackColor = System.Drawing.Color.Transparent;
             this.label20.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label20.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label20.Location = new System.Drawing.Point(28, 300);
+            this.label20.Location = new System.Drawing.Point(28, 322);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(75, 21);
             this.label20.TabIndex = 2;
@@ -600,7 +601,7 @@
             this.BcommunityGroup.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.BcommunityGroup.Font = new System.Drawing.Font("微软雅黑", 12F);
             this.BcommunityGroup.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.BcommunityGroup.Location = new System.Drawing.Point(351, 702);
+            this.BcommunityGroup.Location = new System.Drawing.Point(351, 724);
             this.BcommunityGroup.Name = "BcommunityGroup";
             this.BcommunityGroup.Size = new System.Drawing.Size(102, 34);
             this.BcommunityGroup.TabIndex = 3;
@@ -655,11 +656,25 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "识别的社区组";
             // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(146)))), ((int)(((byte)(183)))));
+            this.label21.Enabled = false;
+            this.label21.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label21.ForeColor = System.Drawing.Color.Black;
+            this.label21.Location = new System.Drawing.Point(12, 297);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(477, 21);
+            this.label21.TabIndex = 2;
+            this.label21.Text = "该功能需要系统代理 Steam 社区, 单击文字可尝试使用浏览器访问";
+            this.label21.Click += new System.EventHandler(this.label21_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.DarkGray;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(490, 781);
@@ -699,6 +714,7 @@
             this.Controls.Add(this.TrealName);
             this.Controls.Add(this.TcommunityLook);
             this.Controls.Add(this.TsteamID64);
+            this.Controls.Add(this.label21);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.Tusername);
@@ -763,6 +779,7 @@
         private System.Windows.Forms.Button btnToggleConsole;
         private System.Windows.Forms.TextBox ThookGroup;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label21;
     }
 }
 

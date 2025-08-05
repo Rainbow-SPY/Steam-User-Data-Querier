@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
@@ -55,37 +56,68 @@ namespace SteamUserData
 
         internal async Task<string> GetGroupTitle(string gid)
         {
-            HttpClient httpClient = new HttpClient(new HttpClientHandler { AllowAutoRedirect = true });
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
-            var response = await httpClient.GetAsync($"https://steamcommunity.com/gid/{gid}");
-            WriteLog.Info($"请求 URL: https://steamcommunity.com/gid/{gid}");
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                WriteLog.Error($"请求失败: {response.StatusCode}, {_HttpClient_Request_Failed}");
+                // 测试 Steam 社区是否可达
+                var ping = new System.Net.NetworkInformation.Ping();
+                var reply = ping.Send("steamcommunity.com");
+                if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
+                {
+                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com");
+                    return null;
+                }
+
+                // 继续原有请求逻辑...
+            }
+            catch (Exception ex)
+            {
+                WriteLog.Error(LogKind.Network, $"网络检查失败: {ex.Message}");
                 return null;
             }
-            var responseData = await response.Content.ReadAsStringAsync();
-            // 检查最终 URL 是否符合预期（例如是否仍包含 gid）
-            string finalUrl = response.RequestMessage.RequestUri.ToString();
-            WriteLog.Info($"最终请求的 URL: {finalUrl}");
-            // 使用正则表达式提取<title>标签内容
-            Match match = Regex.Match(responseData, @"<title>(.*?)</title>", RegexOptions.IgnoreCase);
-            if (match.Success)
+            try
             {
-                string[] parts = match.Groups[1].Value.Trim().Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                string groupName = parts.LastOrDefault()?.Trim(); // "bilibili"
-                if (groupName == "Error")
-                    return "未匹配到结果";
-                WriteLog.Info($"获取到的群组名称: {groupName}");
+                HttpClient httpClient = new HttpClient(new HttpClientHandler
+                {
+                    AllowAutoRedirect = true,
+                    UseProxy = true,
+                    Proxy = WebRequest.GetSystemWebProxy()
+                });
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                var response = await httpClient.GetAsync($"https://steamcommunity.com/gid/{gid}");
+                WriteLog.Info(LogKind.Network, $"请求 URL: https://steamcommunity.com/gid/{gid}");
+                if (!response.IsSuccessStatusCode)
+                {
+                    WriteLog.Error(LogKind.Network, $"请求失败: {response.StatusCode}, {_HttpClient_Request_Failed}");
+                    return null;
+                }
+                var responseData = await response.Content.ReadAsStringAsync();
+                // 检查最终 URL 是否符合预期（例如是否仍包含 gid）
+                string finalUrl = response.RequestMessage.RequestUri.ToString();
+                WriteLog.Info(LogKind.Network, $"最终请求的 URL: {finalUrl}");
+                // 使用正则表达式提取<title>标签内容
+                Match match = Regex.Match(responseData, @"<title>(.*?)</title>", RegexOptions.IgnoreCase);
+                if (match.Success)
+                {
+                    string[] parts = match.Groups[1].Value.Trim().Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
+                    string groupName = parts.LastOrDefault()?.Trim(); // "bilibili"
+                    if (groupName == "Error")
+                        return "未匹配到结果";
+                    WriteLog.Info(LogKind.Regex, $"获取到的群组名称: {groupName}");
 #if DEBUG
-                MessageBox_I.Info($"获取到的群组名称: {groupName}", _TIPS);
+                    MessageBox_I.Info($"获取到的群组名称: {groupName}", _TIPS);
 #endif
 
-                return groupName;
+                    return groupName;
+                }
+                else
+                {
+                    return "未匹配到结果";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "未匹配到结果";
+                WriteLog.Error($"获取群组标题时发生异常:{ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}");
+                return null;
             }
         }
         // 窗口关闭时确保控制台也被关闭（可选）
@@ -119,7 +151,7 @@ namespace SteamUserData
         private async void Button1_Click(object sender, EventArgs e)
         {
             // 将所有 TextBox 控件放入一个数组
-            TextBox[] textBoxes = { Tinput, Tusername, TprofileVisable, TsteamID, TsteamID3, TsteamID64, TcommunityLook, TrealName, Turl, Tavator, TacCreateTime, TRegistryRegoin, Tnow, TfriendCode, TmainGroup };
+            TextBox[] textBoxes = { Tinput, Tusername, TprofileVisable, TsteamID, TsteamID3, TsteamID64, TcommunityLook, ThookGroup, TrealName, Turl, Tavator, TacCreateTime, TRegistryRegoin, Tnow, TfriendCode, TmainGroup };
 
             label18.Visible = true; // 显示加载提示
             // 遍历数组并设置 ReadOnly 属性
@@ -130,6 +162,8 @@ namespace SteamUserData
                 textBox.Clear();
                 textBox.Enabled = false;
             }
+            label21.Enabled = false; // 禁用社区群组按钮
+
 
             string SteamID = Tinput.Text;
             var steamType = await SteamUserData_v1.GetDataJson_v1(SteamID, true);
@@ -178,10 +212,21 @@ namespace SteamUserData
                         Tnow.Text = "想玩";
                         break;
                 }
-                TmainGroup.Text = steamType.primaryclanid;
-                ThookGroup.Text = await GetGroupTitle(TmainGroup.Text);
                 TprofileVisable.Text = steamType.profilestate == 1 ? "已填写个人资料" : "未填写个人资料";
                 TfriendCode.Text = steamType.friendcode;
+                TmainGroup.Text = steamType.primaryclanid;
+                string groupTitle = await GetGroupTitle(TmainGroup.Text);
+                if (groupTitle == null)
+                {
+                    WriteLog.Error(LogKind.Network, "无法连接到 Steam 社区");
+                    ThookGroup.ForeColor = System.Drawing.Color.Red;
+                    ThookGroup.Text = "无法连接到 Steam 社区";
+                }
+                else
+                {
+                    ThookGroup.ForeColor = System.Drawing.Color.RoyalBlue;
+                    ThookGroup.Text = groupTitle;
+                }
                 button2.Enabled = true;
                 button3.Enabled = true;
                 button4.Enabled = true;
@@ -193,6 +238,7 @@ namespace SteamUserData
                     textBox.Enabled = true;
                 }
                 label18.Visible = false; // 隐藏加载提示
+                label21.Enabled = true;
             }
             else
             {
@@ -212,6 +258,7 @@ namespace SteamUserData
                     BcommunityGroup.Enabled = false;
                 }
                 label18.Visible = false; // 隐藏加载提示
+                label21.Enabled = false;
             }
         }
 
@@ -358,5 +405,7 @@ namespace SteamUserData
         private void Turl_Click(object sender, EventArgs e) => Avator_Link(Turl.Text);
 
         private void Tavator_Click(object sender, EventArgs e) => Avator_Link(Tavator.Text);
+
+        private void label21_Click(object sender, EventArgs e) => TcommunityGroup_Click(sender, e);
     }
 }

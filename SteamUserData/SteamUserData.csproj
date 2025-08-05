@@ -18,6 +18,7 @@
     <AssemblyVersion>1.5.9205.5957</AssemblyVersion>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <Title>不是有效的版本字符串</Title>
+    <BaseOutputPath>D:\$Release\Steam User Querier</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>none</DebugType>
