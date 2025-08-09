@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Uwp.Notifications;
+using Rox.GameExpansionFeatures;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Rox.API;
 using static Rox.Runtimes.LocalizedString;
 using static Rox.Runtimes.LogLibraries;
 namespace SteamUserData
@@ -71,7 +71,7 @@ namespace SteamUserData
             }
             catch (Exception ex)
             {
-                WriteLog.Error(LogKind.Network, $"网络检查失败: {ex.Message}");
+                WriteLog.Error(LogKind.Network,_Exception_With_xKind("测试网络时",ex));
                 return null;
             }
             try
@@ -116,7 +116,7 @@ namespace SteamUserData
             }
             catch (Exception ex)
             {
-                WriteLog.Error($"获取群组标题时发生异常:{ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}");
+                WriteLog.Error(_Exception_With_xKind("获取群组标题", ex));
                 return null;
             }
         }
@@ -173,46 +173,28 @@ namespace SteamUserData
                 TsteamID64.Text = steamType.steamid;
                 TsteamID.Text = Rox.GameExpansionFeatures.Steam.Converter.SteamID.ToSteamID(steamType.steamid);
                 TsteamID3.Text = steamType.steamID3;
-                TcommunityLook.Text = steamType.communityvisibilitystate == 1 ? "私密" : (steamType.communityvisibilitystate == 3 ? "公开" : "未知");
+                TcommunityLook.Text = Steam.SteamID.GetCommunityVisibilityState(steamType);
+
                 if (steamType.realname == "N\\/A" || steamType.realname == null || steamType.realname == string.Empty)
                     TrealName.Text = "未知";
                 else
                     TrealName.Text = steamType.realname;
-                Turl.Text = steamType.profileurl/*.Replace("\\/", "/")*/;
-                Tavator.Text = steamType.avatarfull/*.Replace("\\/", "/")*/;
+
+                Turl.Text = steamType.profileurl;
+                Tavator.Text = steamType.avatarfull;
+
                 if (steamType.timecreated_str == "1970-01-01 08:00:00" || steamType.timecreated_str == "N\\/A" || steamType.timecreated_str == null || steamType.timecreated_str == string.Empty)
                     TacCreateTime.Text = "未知";
                 else
                     TacCreateTime.Text = steamType.timecreated_str;
+
                 if (steamType.loccountrycode == "N\\/A" || steamType.loccountrycode == "N\\/A" || steamType.loccountrycode == null || steamType.loccountrycode == string.Empty)
                     TRegistryRegoin.Text = "未知";
                 else
                     TRegistryRegoin.Text = steamType.loccountrycode;
-                switch (steamType.personastate)
-                {
-                    case 0:
-                        Tnow.Text = "离线或私密";
-                        break;
-                    case 1:
-                        Tnow.Text = "在线";
-                        break;
-                    case 2:
-                        Tnow.Text = "忙碌";
-                        break;
-                    case 3:
-                        Tnow.Text = "离开";
-                        break;
-                    case 4:
-                        Tnow.Text = "打盹";
-                        break;
-                    case 5:
-                        Tnow.Text = "想交易";
-                        break;
-                    case 6:
-                        Tnow.Text = "想玩";
-                        break;
-                }
-                TprofileVisable.Text = steamType.profilestate == 1 ? "已填写个人资料" : "未填写个人资料";
+
+                Tnow.Text = Steam.SteamID.GetPersonalState(steamType);
+                TprofileVisable.Text = Steam.SteamID.GetProfileState(steamType);
                 TfriendCode.Text = steamType.friendcode;
                 TmainGroup.Text = steamType.primaryclanid;
                 string groupTitle = await GetGroupTitle(TmainGroup.Text);
