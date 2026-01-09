@@ -32,7 +32,17 @@
     <None Remove="bin\**" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Remove="Form1.cs" />
+    <Compile Remove="Form1.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Form1.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="978.ico" />
+    <None Include="Form1.cs" />
+    <None Include="Form1.Designer.cs" />
+    <None Include="Form1.resx" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AntdUI" Version="2.2.10" />
@@ -43,8 +53,8 @@
     <Reference Include="Rox.API">
       <HintPath>..\..\..\$Release\Rox\Rox.API.dll</HintPath>
     </Reference>
-    <Reference Include="Rox.GameExpansionFeatures">
-      <HintPath>..\..\..\$Release\Rox\Rox.GameExpansionFeatures.dll</HintPath>
+    <Reference Include="Rox.Entertainment">
+      <HintPath>..\..\..\$Release\Rox\Rox.Entertainment.dll</HintPath>
     </Reference>
     <Reference Include="Rox.Runtimes">
       <HintPath>..\..\..\$Release\Rox\Rox.Runtimes.dll</HintPath>
