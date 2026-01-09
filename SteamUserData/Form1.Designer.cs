@@ -625,7 +625,6 @@
             this.btnToggleConsole.TabIndex = 8;
             this.btnToggleConsole.Text = "显示控制台";
             this.btnToggleConsole.UseVisualStyleBackColor = false;
-            this.btnToggleConsole.Click += new System.EventHandler(this.BtnToggleConsole_Click);
             // 
             // ThookGroup
             // 

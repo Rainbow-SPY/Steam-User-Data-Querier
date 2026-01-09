@@ -16,40 +16,12 @@ namespace SteamUserData
 {
     public partial class Form1 : Form
     {
-        // 导入 Windows API
-        [DllImport("kernel32.dll")]
-        internal static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        internal const int SW_HIDE = 0;     // 隐藏窗口
-        internal const int SW_SHOW = 5;     // 显示窗口
-
-        internal bool _consoleVisible = false;
-
         public Form1()
         {
             InitializeComponent();
-            // 初始启动时隐藏控制台
-            ToggleConsole(false);
         }
         // 切换控制台显示状态
-        internal void ToggleConsole(bool show)
-        {
-            IntPtr consoleHandle = GetConsoleWindow();
-            if (consoleHandle != IntPtr.Zero)
-            {
-                ShowWindow(consoleHandle, show ? SW_SHOW : SW_HIDE);
-                _consoleVisible = show;
-            }
-        }
         // 按钮点击事件
-        internal void BtnToggleConsole_Click(object sender, EventArgs e)
-        {
-            ToggleConsole(!_consoleVisible);
-            btnToggleConsole.Text = _consoleVisible ? "隐藏控制台" : "显示控制台";
-        }
         private void button5_Click(object sender, EventArgs e) => Process.Start($"https://steamcommunity.com/gid/{TmainGroup.Text}");
         void Avator_Link(string link) => Process.Start(link);
         private void TcommunityGroup_Click(object sender, EventArgs e) => button5_Click(sender, e);
@@ -121,11 +93,6 @@ namespace SteamUserData
             }
         }
         // 窗口关闭时确保控制台也被关闭（可选）
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            ToggleConsole(false);
-            base.OnFormClosing(e);
-        }
         private void Form1_Load(object sender, EventArgs e)
         {
             Tusername.Leave += TextBox_Leave;
@@ -170,8 +137,8 @@ namespace SteamUserData
             if (steamType != null)
             {
                 Tusername.Text = steamType.personaname;
-                TsteamID64.Text = steamType.steamid;
-                TsteamID.Text = Rox.GameExpansionFeatures.Steam.Converter.SteamID.ToSteamID(steamType.steamid);
+                //TsteamID64.Text = steamType.steamid;
+                //TsteamID.Text = Rox.GameExpansionFeatures.Steam.Converter.SteamID.ToSteamID(steamType.steamid);
                 TsteamID3.Text = steamType.steamID3;
                 TcommunityLook.Text = Steam.SteamID.GetCommunityVisibilityState(steamType);
 
