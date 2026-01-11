@@ -11,17 +11,23 @@
     <StartupObject>SteamUserData.Program</StartupObject>
     <AssemblyName>Steam-User-Data-Querier</AssemblyName>
     <ApplicationIcon>978.ico</ApplicationIcon>
-    <Version></Version>
+    <Version>2.0.0</Version>
     <Authors>Rainbow SPY</Authors>
     <Company>Rainbow SPY</Company>
-    <FileVersion>v1.0.0.25316-released</FileVersion>
-    <AssemblyVersion>1.5.9205.5957</AssemblyVersion>
+    <FileVersion>v2.0.0.26111-released</FileVersion>
+    <AssemblyVersion>2.0.1205.1557</AssemblyVersion>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
     <Title>不是有效的版本字符串</Title>
     <BaseOutputPath>D:\$Release\Steam User Querier</BaseOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>none</DebugType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- 针对非字符串资源启用预序列化，适配.NET 5+ -->
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <!-- 可选：指定资源编译器版本（确保兼容） -->
+    <GenerateResourceMSBuildArchitecture>CurrentArchitecture</GenerateResourceMSBuildArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
@@ -47,6 +53,7 @@
   <ItemGroup>
     <PackageReference Include="AntdUI" Version="2.2.10" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Rox.API">
