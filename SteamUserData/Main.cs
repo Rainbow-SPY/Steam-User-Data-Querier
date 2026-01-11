@@ -1,9 +1,9 @@
 ﻿using AntdUI;
+using SteamUserData.Properties;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -91,7 +91,7 @@ namespace SteamUserData
             }
         }
         public Input[] inputs() => new Input[] { IUsername, ISteamID3, ICMGroupID, IFriendCode, ISteamID, ISteamID64, IPersonaname, IAccountCreatedStr };
-        public Alert[] alerts() => new Alert[] { ASteamCMVisibility, AOnlineStatus, ACMAbout };
+        public Alert[] alerts() => new Alert[] { ASteamCMVisibility, AOnlineStatus, ACMAbout, ARegistryRegion };
         public void ResetAlerts()
         {
             ASteamCMVisibility.Icon = TType.Info;
@@ -103,8 +103,10 @@ namespace SteamUserData
             ACMAbout.Icon = TType.Info;
             ACMAbout.Text = "已填写";
             ACMAbout.Hide();
+            ARegistryRegion.Icon = TType.Info;
+            ARegistryRegion.Text = "";
+            ARegistryRegion.Hide();
 
-            IInput.Text += GetFlagEmoji("CN");
         }
         private async void GetData_Click(object sender, EventArgs e)
         {
@@ -116,7 +118,7 @@ namespace SteamUserData
             }
             foreach (var i in inputs())
                 i.Clear();
-            ResetAlerts();
+                ResetAlerts();
             try
             {
                 var steamType = await Rox.Entertainment.SteamUserData_v1.GetDataJson_v1(SteamID, true);
@@ -132,10 +134,10 @@ namespace SteamUserData
                     IAccountCreatedStr.Text = steamType.timecreated_str;
                     foreach (var i in alerts())
                         i.Show();
-                    ASteamCMVisibility.Icon = steamType.communityvisibilitystate == 1
+                    ASteamCMVisibility.Icon = steamType.communityvisibilitystate == 3
                         ? TType.Success
                         : TType.Error;
-                    if (steamType.communityvisibilitystate != 1)
+                    if (steamType.communityvisibilitystate != 3)
                         ASteamCMVisibility.Text = "不可见";
                     ACMAbout.Text = (steamType.profilestate == 1
                         ? "已"
@@ -149,6 +151,13 @@ namespace SteamUserData
                     AOnlineStatus.Text = steamType.personastate == 0 || steamType.personastate == 3
                         ? ""
                         : Rox.Entertainment.Steam.SteamID.GetPersonalState(steamType);
+                    ARegistryRegion.Text = A(steamType.loccountrycode) == null
+                        ? "未知"
+                        : A(steamType.loccountrycode);
+                    ARegistryRegion.Icon = string.IsNullOrWhiteSpace(A(steamType.loccountrycode))
+                        ? TType.Error
+                        : TType.Success;
+
                     if (steamType.personastate == 0 || steamType.personastate == 3)
                         AOnlineStatus.TextTitle = "当前离线";
                 }
@@ -158,64 +167,35 @@ namespace SteamUserData
                     return;
                 }
             }
-            catch (Exception ex)
+            catch //Exception ex)
             {
-                WriteLog.Error(_Exception_With_xKind("获取 Steam 用户数据时", ex));
+                //WriteLog.Error(_Exception_With_xKind("获取 Steam 用户数据时", ex));
             }
         }
-        /// <summary>
-        /// 根据两位国家/地区代码生成国旗Emoji
-        /// </summary>
-        /// <param name="countryCode">两位大写代码（如CN、US、JP）</param>
-        /// <returns>国旗Emoji字符串，无效代码返回空</returns>
-        public static string GetFlagEmoji(string countryCode)
+        string A(string code)
         {
-            // 验证输入：必须是两位大写字母
-            if (string.IsNullOrEmpty(countryCode) || countryCode.Length != 2)
+            // 读取CSV资源，处理Windows换行符（\r\n）和Linux换行符（\n）
+            string csvContent = Resources.iso3166?.Replace("\r\n", "\n") ?? string.Empty;
+            if (string.IsNullOrEmpty(csvContent))
             {
-                return string.Empty;
+                WriteLog.Warning("ISO3166 CSV资源为空");
+                return null;
             }
-
-            countryCode = countryCode.ToUpper();
-            char firstChar = countryCode[0];
-            char secondChar = countryCode[1];
-
-            // 验证字符范围（A-Z）
-            if (firstChar < 'A' || firstChar > 'Z' || secondChar < 'A' || secondChar > 'Z')
+            string[] array = csvContent.Split('\n');
+            for (int i = 1; i < array.Length; i++)
             {
-                return string.Empty;
+                if (string.IsNullOrEmpty(array[i].Trim())) continue;
+                string a = array[i];
+                string[] sp = a.Split(',');
+                if (sp[1] == code)
+                {
+                    WriteLog.Info("查询到的国家/地区:" + a);
+                    return sp[0];
+                }
             }
-
-            // 计算Regional Indicator Symbol编码：A=0x1F1E6，B=0x1F1E7...Z=0x1F1FF
-            int firstCode = 0x1F1E6 + (firstChar - 'A');
-            int secondCode = 0x1F1E6 + (secondChar - 'A');
-
-            // 转换为Emoji字符
-            StringBuilder flagEmoji = new StringBuilder();
-            flagEmoji.Append(char.ConvertFromUtf32(firstCode));
-            flagEmoji.Append(char.ConvertFromUtf32(secondCode));
-
-            return flagEmoji.ToString();
+            return null;
         }
 
-        // 测试示例
-        public static void TestFlagEmoji()
-        {
-            // 控制台需先设置UTF8编码
-            Console.OutputEncoding = Encoding.UTF8;
-
-            // 常用国家测试
-            Console.WriteLine($"CN: {GetFlagEmoji("CN")} 中国");
-            Console.WriteLine($"US: {GetFlagEmoji("US")} 美国");
-            Console.WriteLine($"JP: {GetFlagEmoji("JP")} 日本");
-            Console.WriteLine($"GB: {GetFlagEmoji("GB")} 英国");
-            Console.WriteLine($"DE: {GetFlagEmoji("DE")} 德国");
-            Console.WriteLine($"FR: {GetFlagEmoji("FR")} 法国");
-
-            // 无效代码测试
-            Console.WriteLine($"无效代码 12: {GetFlagEmoji("12")}");
-            Console.WriteLine($"无效代码 C: {GetFlagEmoji("C")}");
-        }
         private void Input_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
@@ -236,7 +216,7 @@ namespace SteamUserData
                 "祝你幸福。",
                 "不要再来了!!!!!!",
             };
-            WriteLog.Info("丰川祥子", talk[new Random(new Random(new Random(new Random().Next(12,1999)).Next(123,321)).Next(18,360)).Next(talk.Count())]);
+            WriteLog.Info("丰川祥子", talk[new Random(new Random(new Random(new Random().Next(12, 1999)).Next(123, 321)).Next(18, 360)).Next(talk.Count())]);
         }
     }
 }

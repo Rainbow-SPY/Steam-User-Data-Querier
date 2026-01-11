@@ -61,11 +61,6 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Main.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Main.resx</DependentUpon>
-    </Compile>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -74,8 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Main.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Main.Designer.cs</LastGenOutput>
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
