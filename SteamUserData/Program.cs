@@ -1,12 +1,6 @@
 ﻿using Rox.Runtimes;
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using static Rox.Runtimes.LocalizedString;
-using static Rox.Runtimes.LogLibraries;
 using static Rox.Runtimes.Reporter;
-using static Rox.Runtimes.Reporter.InitializeReportInterface;
 namespace SteamUserData
 {
     internal static class Program
@@ -25,7 +19,7 @@ namespace SteamUserData
             //Application.SetCompatibleTextRenderingDefault(false);
             //WriteLog.Info(LogKind.Form, _PROCESS_STARTED + Process.GetCurrentProcess().Id);
             //Application.Run(new Form1());
-            
+
         }
     }
 }

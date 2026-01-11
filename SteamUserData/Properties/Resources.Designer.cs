@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SteamUserData {
+namespace SteamUserData.Properties {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace SteamUserData {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource1 {
+    internal class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resource1() {
+        internal Resources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace SteamUserData {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SteamUserData.Resource1", typeof(Resource1).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SteamUserData.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,12 +61,70 @@ namespace SteamUserData {
         }
         
         /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        ///   查找类似 中文名称,二位代码
+        ///阿富汗,AF
+        ///奥兰,AX
+        ///阿尔巴尼亚,AL
+        ///阿尔及利亚,DZ
+        ///美属萨摩亚,AS
+        ///安道尔,AD
+        ///安哥拉,AO
+        ///安圭拉,AI
+        ///南极洲,AQ
+        ///安提瓜和巴布达,AG
+        ///阿根廷,AR
+        ///亚美尼亚,AM
+        ///阿鲁巴,AW
+        ///澳大利亚,AU
+        ///奥地利,AT
+        ///阿塞拜疆,AZ
+        ///巴哈马,BS
+        ///巴林,BH
+        ///孟加拉国,BD
+        ///巴巴多斯,BB
+        ///白俄罗斯,BY
+        ///比利时,BE
+        ///伯利兹,BZ
+        ///贝宁,BJ
+        ///百慕大,BM
+        ///不丹,BT
+        ///玻利维亚,BO
+        ///荷兰加勒比区,BQ
+        ///波黑,BA
+        ///博茨瓦纳,BW
+        ///布韦岛,BV
+        ///巴西,BR
+        ///英属印度洋领地,IO
+        ///文莱,BN
+        ///保加利亚,BG
+        ///布基纳法索,BF
+        ///布隆迪,BI
+        ///佛得角,CV
+        ///柬埔寨,KH
+        ///喀麦隆,CM
+        ///加拿大,CA
+        ///开曼群岛,KY
+        ///中非,CF
+        ///乍得,TD
+        ///智利,CL
+        ///中国,CN
+        ///圣诞岛,CX
+        ///科科斯（基林）群岛,CC
+        ///哥伦比亚,CO
+        ///科摩罗,KM
+        ///刚果共和国,CG
+        ///刚果民主共和国,CD
+        ///库克群岛,CK
+        ///哥斯达黎加,CR
+        ///科特迪瓦,CI
+        ///克罗地亚,HR
+        ///古巴,CU
+        ///库拉索,CW
+        ///塞浦 [字符串的其余部分被截断]&quot;; 的本地化字符串。
         /// </summary>
-        internal static System.Drawing.Bitmap togawa_sakiko {
+        internal static string iso3166 {
             get {
-                object obj = ResourceManager.GetObject("togawa sakiko", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("iso3166", resourceCulture);
             }
         }
     }
