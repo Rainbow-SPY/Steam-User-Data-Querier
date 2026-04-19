@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AntdUI;
-using Rox.Entertainment;
+using Rox.Runtimes;
 using SteamUserData.Properties;
+using UAPI;
 using static Rox.Runtimes.LocalizedString;
 using static Rox.Runtimes.LogLibraries;
 
@@ -17,13 +19,29 @@ namespace SteamUserData
 {
     public partial class Main : Window
     {
+        private static Font CustomFont(int size = 10) => new Font("微软雅黑", size, FontStyle.Regular);
+
         public Main()
         {
             InitializeComponent();
             foreach (var item in alerts())
                 item.Hide();
 
-            //    IAccountCreatedStr.Suffix = "v"
+            Thread_I.NewThread(() => p(this));
+        }
+
+        private static void p(Form parent)
+        {
+            Thread.Sleep(1000);
+            var a = new Modal.Config(parent, "温馨提示", "如果遇到请求失败 TaskCanceled 取消了一个任务, 请等待1分钟后再次尝试, 已知问题已经在修复中...",
+                TType.Info)
+            {
+                Font = CustomFont(10),
+                OkFont = CustomFont(10),
+                OkText = "我知道了",
+                MaskClosable = false,
+                Draggable = false,
+            }.open();
         }
 
         private void Input_Leave(object sender, EventArgs e)
@@ -37,12 +55,9 @@ namespace SteamUserData
         {
             try
             {
-                // 测试 Steam 社区是否可达
-                var ping = new Ping();
-                var reply = ping.Send("steamcommunity.com");
-                if (reply != null && reply.Status != IPStatus.Success)
+                if (Rox.Runtimes.Network_I.GetPingDelay("steamcommunity.com", 1000) > 500)
                 {
-                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com");
+                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com, 因为 DelayMs 大于 400ms");
                     return null;
                 }
             }
@@ -62,6 +77,7 @@ namespace SteamUserData
                 });
                 httpClient.DefaultRequestHeaders.Add("User-Agent",
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+
                 var response = await httpClient.GetAsync($"https://steamcommunity.com/gid/{gid}");
                 WriteLog.Info(LogKind.Network, $"请求 URL: https://steamcommunity.com/gid/{gid}");
                 if (!response.IsSuccessStatusCode)
@@ -70,15 +86,16 @@ namespace SteamUserData
                     return null;
                 }
 
-                var responseData = await response.Content.ReadAsStringAsync();
-                // 检查最终 URL 是否符合预期（例如是否仍包含 gid）
-                var finalUrl = response.RequestMessage.RequestUri.ToString();
-                WriteLog.Info(LogKind.Network, $"最终请求的 URL: {finalUrl}");
+                WriteLog.Info(LogKind.Network, $"最终请求的 URL: {response.RequestMessage.RequestUri}");
                 // 使用正则表达式提取<title>标签内容
-                var match = Regex.Match(responseData, @"<title>(.*?)</title>", RegexOptions.IgnoreCase);
-                if (!match.Success) return "未匹配到结果";
-                var parts = match.Groups[1].Value.Trim().Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                var groupName = parts.LastOrDefault()?.Trim();
+                var match = Regex.Match(await response.Content.ReadAsStringAsync(), @"<title>(.*?)</title>",
+                    RegexOptions.IgnoreCase);
+                if (!match.Success)
+                    return "未匹配到结果";
+
+                var groupName = match.Groups[1].Value.Trim()
+                    .Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Trim();
+
                 if (groupName == "Error")
                     return "未匹配到结果";
                 WriteLog.Info(LogKind.Regex, $"获取到的群组名称: {groupName}");
@@ -130,52 +147,40 @@ namespace SteamUserData
                 foreach (var i in inputs())
                     i.Clear();
                 ResetAlerts();
-                var steamType = await SteamUserData_v1.GetDataJson_v1(SteamID, true);
+                var steamType = await Steam.GetUserData(SteamID);
                 if (steamType != null)
                 {
-                    //Thread_I.NewThread(B);
-                    //async void B()
-                    //{
-                    //    using (var _ = image3D2.Image = Image.FromStream(await new HttpClient().GetStreamAsync(steamType.avatarfull)) ?? SystemIcons.Error.ToBitmap())
-                    //    {
-
-                    //    }
-                    //}
-                    IUsername.Text = steamType.personaname;
-                    ISteamID3.Text = steamType.steamID3;
-                    ICMGroupID.Text = steamType.primaryclanid;
-                    IFriendCode.Text = steamType.friendcode;
-                    ISteamID.Text = Steam.Converter.SteamID.ToSteamID(steamType.steamid.ToString());
-                    ISteamID64.Text = steamType.steamid.ToString();
-                    IPersonaname.Text = steamType.realname;
-                    IAccountCreatedStr.Text = steamType.timecreated_str;
+                    IUsername.Text = steamType.Name;
+                    ISteamID3.Text = steamType.SteamID3;
+                    ICMGroupID.Text = steamType.PrimaryClanID;
+                    IFriendCode.Text = steamType.FriendCode;
+                    ISteamID.Text = steamType.SteamID1;
+                    ISteamID64.Text = steamType.SteamID64;
+                    IPersonaname.Text = steamType.RealName;
+                    IAccountCreatedStr.Text = steamType.RegisterTime;
                     foreach (var i in alerts())
                         i.Show();
-                    ASteamCMVisibility.Icon = steamType.communityvisibilitystate == 3
+                    ASteamCMVisibility.Icon = steamType.IsCommunityVisibility
                         ? TType.Success
                         : TType.Error;
-                    if (steamType.communityvisibilitystate != 3)
+                    if (steamType.IsCommunityVisibility)
                         ASteamCMVisibility.Text = "不可见";
-                    ACMAbout.Text = (steamType.profilestate == 1
+                    ACMAbout.Text = (steamType.IsInitialized
                         ? "已"
                         : "未") + "填写";
-                    ACMAbout.Icon = steamType.profilestate == 1
+                    ACMAbout.Icon = steamType.IsInitialized
                         ? TType.Success
                         : TType.Error;
-                    AOnlineStatus.Icon = steamType.personastate == 0 || steamType.personastate == 3
+                    AOnlineStatus.Icon = steamType.PersonaState != "未知状态" || steamType.PersonaState != "离线"
                         ? TType.Error
                         : TType.Success;
-                    AOnlineStatus.Text = steamType.personastate == 0 || steamType.personastate == 3
-                        ? ""
-                        : Steam.SteamID.GetPersonalState(steamType);
-                    ARegistryRegion.Text = A(steamType.loccountrycode) == null
+                    AOnlineStatus.Text = steamType.PersonaState;
+                    ARegistryRegion.Text = A(steamType.BindLocationRegionCode) == null
                         ? "未知"
-                        : A(steamType.loccountrycode);
-                    ARegistryRegion.Icon = string.IsNullOrWhiteSpace(A(steamType.loccountrycode))
+                        : A(steamType.BindLocationRegionCode);
+                    ARegistryRegion.Icon = string.IsNullOrWhiteSpace(A(steamType.BindLocationRegionCode))
                         ? TType.Error
                         : TType.Success;
-                    if (steamType.personastate == 0 || steamType.personastate == 3)
-                        AOnlineStatus.TextTitle = "当前离线";
                 }
                 else
                 {
@@ -188,22 +193,24 @@ namespace SteamUserData
             }
         }
 
-        string A(string code)
+        private static string A(string code)
         {
             var csvContent = Resources.iso3166?.Replace("\r\n", "\n") ?? string.Empty;
             if (string.IsNullOrEmpty(csvContent))
             {
-                WriteLog.Warning("ISO3166 CSV资源为空");
+                WriteLog.Warning(LogKind.File, "ISO3166 CSV资源为空");
                 return null;
             }
 
             var array = csvContent.Split('\n');
             for (var i = 1; i < array.Length; i++)
             {
-                if (string.IsNullOrEmpty(array[i].Trim())) continue;
+                if (string.IsNullOrEmpty(array[i].Trim()))
+                    continue;
                 var a = array[i];
                 var sp = a.Split(',');
-                if (sp[1] != code) continue;
+                if (sp[1] != code)
+                    continue;
                 WriteLog.Info("查询到的国家/地区:" + a);
                 return sp[0];
             }
@@ -213,13 +220,14 @@ namespace SteamUserData
 
         private void Input_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != (char)Keys.Enter) return;
+            if (e.KeyChar != (char)Keys.Enter)
+                return;
             e.Handled = true;
 
             button1.PerformClick();
         }
 
-        void A()
+        private static void B()
         {
             string[] talk =
             {
@@ -235,13 +243,11 @@ namespace SteamUserData
                         talk.Count())]);
         }
 
-        private void Togawa_Sakiko_MouseDoubleClick(object sender, MouseEventArgs e) => A();
+        private void Togawa_Sakiko_MouseDoubleClick(object sender, MouseEventArgs e) => B();
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
         }
-
-      //  Process.Start($"{sender}"); }
 
         private void label9_Click(object sender, EventArgs e) => pictureBox1_Click(sender, e);
 

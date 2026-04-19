@@ -376,7 +376,7 @@
             this.TRegistryRegoin.Size = new System.Drawing.Size(128, 26);
             this.TRegistryRegoin.TabIndex = 1;
             this.TRegistryRegoin.WordWrap = false;
-            this.TRegistryRegoin.DoubleClick += new System.EventHandler(this.TDC_RegistryRegoin);
+            this.TRegistryRegoin.DoubleClick += new System.EventHandler(this.TDC_RegistryRegion);
             // 
             // label13
             // 

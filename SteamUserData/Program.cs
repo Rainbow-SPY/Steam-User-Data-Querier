@@ -1,6 +1,6 @@
-﻿using Rox.Runtimes;
-using System;
-using static Rox.Runtimes.Reporter;
+﻿using System;
+using Rox.Runtimes;
+
 namespace SteamUserData
 {
     internal static class Program
@@ -9,17 +9,17 @@ namespace SteamUserData
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Console.Title = $"日志输出中, 请勿关闭!";
-            Main form() => new Main();
-            InitializeReportInterface reporter = new Reporter.InitializeReportInterface(form);
-            reporter.Run();
+            new Reporter.InitializeReportInterface(form).Run();
+            return;
             //Application.EnableVisualStyles();
             //Application.SetCompatibleTextRenderingDefault(false);
             //WriteLog.Info(LogKind.Form, _PROCESS_STARTED + Process.GetCurrentProcess().Id);
             //Application.Run(new Form1());
 
+            Main form() => new Main();
         }
     }
 }

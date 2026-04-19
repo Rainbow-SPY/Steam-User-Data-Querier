@@ -36,19 +36,13 @@
     <Compile Remove="bin\**" />
     <EmbeddedResource Remove="bin\**" />
     <None Remove="bin\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Remove="Form1.cs" />
+    <None Include="Form1.cs" />
     <Compile Remove="Form1.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Remove="Form1.resx" />
+    <None Include="Form1.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="978.ico" />
-    <None Include="Form1.cs" />
-    <None Include="Form1.Designer.cs" />
-    <None Include="Form1.resx" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AntdUI" Version="2.2.10" />
@@ -56,16 +50,13 @@
     <PackageReference Include="System.Resources.Extensions" Version="10.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Rox.API">
-      <HintPath>..\..\..\$Release\Rox\Rox.API.dll</HintPath>
-    </Reference>
-    <Reference Include="Rox.Entertainment">
-      <HintPath>..\..\..\$Release\Rox\Rox.Entertainment.dll</HintPath>
-    </Reference>
     <Reference Include="Rox.Runtimes">
       <HintPath>..\..\..\$Release\Rox\Rox.Runtimes.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
+    <Reference Include="UAPI-community-sdk-csharp">
+      <HintPath>..\..\..\$Release\UAPI\Release\UAPI-community-sdk-csharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

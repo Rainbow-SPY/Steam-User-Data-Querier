@@ -1,17 +1,18 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
-using Rox.GameExpansionFeatures;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.Toolkit.Uwp.Notifications;
+using UAPI;
+using Rox.Runtimes;
 using static Rox.Runtimes.LocalizedString;
 using static Rox.Runtimes.LogLibraries;
+
 namespace SteamUserData
 {
     public partial class Form1 : Form
@@ -20,41 +21,44 @@ namespace SteamUserData
         {
             InitializeComponent();
         }
+
         // 切换控制台显示状态
         // 按钮点击事件
-        private void button5_Click(object sender, EventArgs e) => Process.Start($"https://steamcommunity.com/gid/{TmainGroup.Text}");
-        void Avator_Link(string link) => Process.Start(link);
+        private void button5_Click(object sender, EventArgs e) =>
+            Process.Start($"https://steamcommunity.com/gid/{TmainGroup.Text}");
+
+        private static void Avatar_Link(string link) => Process.Start(link);
         private void TcommunityGroup_Click(object sender, EventArgs e) => button5_Click(sender, e);
 
-        internal async Task<string> GetGroupTitle(string gid)
+        internal static async Task<string> GetGroupTitle(string gid)
         {
             try
             {
-                // 测试 Steam 社区是否可达
-                var ping = new System.Net.NetworkInformation.Ping();
-                var reply = ping.Send("steamcommunity.com");
-                if (reply.Status != System.Net.NetworkInformation.IPStatus.Success)
+                if (Network_I.GetPingDelay("steamcommunity.com", 1000) > 400)
                 {
-                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com");
+                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com, 因为 DelayMs 大于 400ms");
                     return null;
                 }
-
-                // 继续原有请求逻辑...
+                else
+                    WriteLog.Info(LogKind.Network, "Steam Community 连接成功!");
             }
             catch (Exception ex)
             {
-                WriteLog.Error(LogKind.Network,_Exception_With_xKind("测试网络时",ex));
+                WriteLog.Error(LogKind.Network, _Exception_With_xKind("测试网络时", ex));
                 return null;
             }
+
             try
             {
-                HttpClient httpClient = new HttpClient(new HttpClientHandler
+                var httpClient = new HttpClient(new HttpClientHandler
                 {
                     AllowAutoRedirect = true,
                     UseProxy = true,
                     Proxy = WebRequest.GetSystemWebProxy()
                 });
-                httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+                httpClient.DefaultRequestHeaders.Add("User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+
                 var response = await httpClient.GetAsync($"https://steamcommunity.com/gid/{gid}");
                 WriteLog.Info(LogKind.Network, $"请求 URL: https://steamcommunity.com/gid/{gid}");
                 if (!response.IsSuccessStatusCode)
@@ -62,16 +66,19 @@ namespace SteamUserData
                     WriteLog.Error(LogKind.Network, $"请求失败: {response.StatusCode}, {_HttpClient_Request_Failed}");
                     return null;
                 }
+
                 var responseData = await response.Content.ReadAsStringAsync();
                 // 检查最终 URL 是否符合预期（例如是否仍包含 gid）
-                string finalUrl = response.RequestMessage.RequestUri.ToString();
+                var finalUrl = response.RequestMessage.RequestUri.ToString();
                 WriteLog.Info(LogKind.Network, $"最终请求的 URL: {finalUrl}");
                 // 使用正则表达式提取<title>标签内容
-                Match match = Regex.Match(responseData, @"<title>(.*?)</title>", RegexOptions.IgnoreCase);
+                var match = Regex.Match(responseData, @"<title>(.*?)</title>", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
-                    string[] parts = match.Groups[1].Value.Trim().Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries);
-                    string groupName = parts.LastOrDefault()?.Trim(); // "bilibili"
+                    var groupName = match.Groups[1].Value.Trim()
+                        .Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()
+                        ?.Trim();
+                    // "bilibili"
                     if (groupName == "Error")
                         return "未匹配到结果";
                     WriteLog.Info(LogKind.Regex, $"获取到的群组名称: {groupName}");
@@ -81,10 +88,8 @@ namespace SteamUserData
 
                     return groupName;
                 }
-                else
-                {
-                    return "未匹配到结果";
-                }
+
+                return "未匹配到结果";
             }
             catch (Exception ex)
             {
@@ -92,7 +97,8 @@ namespace SteamUserData
                 return null;
             }
         }
-        // 窗口关闭时确保控制台也被关闭（可选）
+
+        // 窗口关闭时确保控制台也可被……关闭
         private void Form1_Load(object sender, EventArgs e)
         {
             Tusername.Leave += TextBox_Leave;
@@ -118,7 +124,11 @@ namespace SteamUserData
         private async void Button1_Click(object sender, EventArgs e)
         {
             // 将所有 TextBox 控件放入一个数组
-            TextBox[] textBoxes = { Tinput, Tusername, TprofileVisable, TsteamID, TsteamID3, TsteamID64, TcommunityLook, ThookGroup, TrealName, Turl, Tavator, TacCreateTime, TRegistryRegoin, Tnow, TfriendCode, TmainGroup };
+            TextBox[] textBoxes =
+            {
+                Tinput, Tusername, TprofileVisable, TsteamID, TsteamID3, TsteamID64, TcommunityLook, ThookGroup,
+                TrealName, Turl, Tavator, TacCreateTime, TRegistryRegoin, Tnow, TfriendCode, TmainGroup
+            };
 
             label18.Visible = true; // 显示加载提示
             // 遍历数组并设置 ReadOnly 属性
@@ -129,42 +139,44 @@ namespace SteamUserData
                 textBox.Clear();
                 textBox.Enabled = false;
             }
+
             label21.Enabled = false; // 禁用社区群组按钮
 
 
-            string SteamID = Tinput.Text;
-            var steamType = await SteamUserData_v1.GetDataJson_v1(SteamID, true);
+            var SteamID = Tinput.Text;
+            var steamType = await Steam.GetUserData(SteamID, null, "");
             if (steamType != null)
             {
-                Tusername.Text = steamType.personaname;
-                //TsteamID64.Text = steamType.steamid;
-                //TsteamID.Text = Rox.GameExpansionFeatures.Steam.Converter.SteamID.ToSteamID(steamType.steamid);
-                TsteamID3.Text = steamType.steamID3;
-                TcommunityLook.Text = Steam.SteamID.GetCommunityVisibilityState(steamType);
+                Tusername.Text = steamType.Name;
+                TsteamID3.Text = steamType.SteamID3;
+                TcommunityLook.Text = steamType.IsCommunityVisibility ? "可见" : "私密";
 
-                if (steamType.realname == "N\\/A" || steamType.realname == null || steamType.realname == string.Empty)
+                if (steamType.RealName == "N\\/A" || steamType.RealName == null || steamType.RealName == string.Empty)
                     TrealName.Text = "未知";
                 else
-                    TrealName.Text = steamType.realname;
+                    TrealName.Text = steamType.RealName;
 
-                Turl.Text = steamType.profileurl;
-                Tavator.Text = steamType.avatarfull;
+                Turl.Text = steamType.ProfileUrl;
+                Tavator.Text = steamType.Avatar_184x184;
 
-                if (steamType.timecreated_str == "1970-01-01 08:00:00" || steamType.timecreated_str == "N\\/A" || steamType.timecreated_str == null || steamType.timecreated_str == string.Empty)
+                if (steamType.RegisterTime == "1970-01-01 08:00:00" || steamType.RegisterTime == "N\\/A" ||
+                    steamType.RegisterTime == null || steamType.RegisterTime == string.Empty)
                     TacCreateTime.Text = "未知";
                 else
-                    TacCreateTime.Text = steamType.timecreated_str;
+                    TacCreateTime.Text = steamType.RegisterTime;
 
-                if (steamType.loccountrycode == "N\\/A" || steamType.loccountrycode == "N\\/A" || steamType.loccountrycode == null || steamType.loccountrycode == string.Empty)
+                if (steamType.BindLocationRegionCode == "N\\/A" || steamType.BindLocationRegionCode == "N\\/A" ||
+                    steamType.BindLocationRegionCode == null || steamType.BindLocationRegionCode == string.Empty)
                     TRegistryRegoin.Text = "未知";
                 else
-                    TRegistryRegoin.Text = steamType.loccountrycode;
+                    TRegistryRegoin.Text = steamType.BindLocationRegionCode;
 
-                Tnow.Text = Steam.SteamID.GetPersonalState(steamType);
-                TprofileVisable.Text = Steam.SteamID.GetProfileState(steamType);
-                TfriendCode.Text = steamType.friendcode;
-                TmainGroup.Text = steamType.primaryclanid;
-                string groupTitle = await GetGroupTitle(TmainGroup.Text);
+                Tnow.Text = steamType.PersonaState;
+                TprofileVisable.Text = steamType.PersonaState;
+                TfriendCode.Text = steamType.FriendCode;
+                TmainGroup.Text = steamType.PrimaryClanID;
+                
+                var groupTitle = await GetGroupTitle(TmainGroup.Text);
                 if (groupTitle == null)
                 {
                     WriteLog.Error(LogKind.Network, "无法连接到 Steam 社区");
@@ -176,16 +188,16 @@ namespace SteamUserData
                     ThookGroup.ForeColor = System.Drawing.Color.RoyalBlue;
                     ThookGroup.Text = groupTitle;
                 }
+
                 button2.Enabled = true;
                 button3.Enabled = true;
                 button4.Enabled = true;
                 BcommunityGroup.Enabled = true;
 
                 // 遍历数组并设置 ReadOnly 属性
-                foreach (var textBox in textBoxes)
-                {
+                foreach (var textBox in textBoxes) 
                     textBox.Enabled = true;
-                }
+
                 label18.Visible = false; // 隐藏加载提示
                 label21.Enabled = true;
             }
@@ -206,34 +218,37 @@ namespace SteamUserData
                     button4.Enabled = false;
                     BcommunityGroup.Enabled = false;
                 }
+
                 label18.Visible = false; // 隐藏加载提示
                 label21.Enabled = false;
             }
         }
 
-        private void TextBox_Leave(object sender, EventArgs e)
+        private static void TextBox_Leave(object sender, EventArgs e)
         {
             if (sender is TextBox textBox)
-            {
                 // 取消文本选择
                 textBox.SelectionLength = 0;
-            }
         }
+
         private void TDC_username(object sender, EventArgs e)
         {
             new ToastContentBuilder().AddText($"已复制用户名: {Tusername.Text}").Show();
             Clipboard.SetText(Tusername.Text);
         }
+
         private void TDC_mailGroup(object sender, EventArgs e)
         {
             new ToastContentBuilder().AddText($"已复制主群组ID: {TmainGroup.Text}").Show();
             Clipboard.SetText(TmainGroup.Text);
         }
+
         private void TDC_steamID(object sender, EventArgs e)
         {
             new ToastContentBuilder().AddText($"已复制SteamID: {TsteamID.Text}").Show();
             Clipboard.SetText(TsteamID.Text);
         }
+
         private void TDC_steamID3(object sender, EventArgs e)
         {
             new ToastContentBuilder().AddText($"已复制SteamID3: {TsteamID3.Text}").Show();
@@ -258,7 +273,7 @@ namespace SteamUserData
             Clipboard.SetText(TacCreateTime.Text);
         }
 
-        private void TDC_RegistryRegoin(object sender, EventArgs e)
+        private void TDC_RegistryRegion(object sender, EventArgs e)
         {
             new ToastContentBuilder().AddText($"已复制账号绑定区域: {TRegistryRegoin.Text}").Show();
             Clipboard.SetText(TRegistryRegoin.Text);
@@ -283,29 +298,38 @@ namespace SteamUserData
                 MessageBox.Show("请输入SteamID64请求数据后,再进行保存", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            string Text = $"个人资料可见性: {TprofileVisable.Text}\n" +
-                $"SteamID: {TsteamID.Text}\n" +
-                $"SteamID3: {TsteamID3.Text}\n" +
-                $"SteamID64: {TsteamID64.Text}\n" +
-                $"用户名: {Tusername.Text}\n" +
-                $"真实姓名: {TrealName.Text}\n" +
-                $"个人主页: {Turl.Text}\n" +
-                $"头像地址: {Tavator.Text}\n" +
-                $"账号创建日期: {TacCreateTime.Text}\n" +
-                $"账号绑定区域: {TRegistryRegoin.Text}\n" +
-                $"社区查看权限: {TcommunityLook.Text}\n" +
-                $"主群组ID: {TmainGroup.Text}\n" +
-                $"当前状态: {Tnow.Text}\n" +
-                $"好友代码: {TfriendCode.Text}\n";
-            var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), $"Steam User {TsteamID64.Text}`s Data.txt");
+
+            var text = $"个人资料可见性: {TprofileVisable.Text}\n" +
+                       $"SteamID: {TsteamID.Text}\n" +
+                       $"SteamID3: {TsteamID3.Text}\n" +
+                       $"SteamID64: {TsteamID64.Text}\n" +
+                       $"用户名: {Tusername.Text}\n" +
+                       $"真实姓名: {TrealName.Text}\n" +
+                       $"个人主页: {Turl.Text}\n" +
+                       $"头像地址: {Tavator.Text}\n" +
+                       $"账号创建日期: {TacCreateTime.Text}\n" +
+                       $"账号绑定区域: {TRegistryRegoin.Text}\n" +
+                       $"社区查看权限: {TcommunityLook.Text}\n" +
+                       $"主群组ID: {TmainGroup.Text}\n" +
+                       $"当前状态: {Tnow.Text}\n" +
+                       $"好友代码: {TfriendCode.Text}\n";
+            
+            var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory),
+                $"Steam User {TsteamID64.Text}`s Data.txt");
+            
             if (!File.Exists(file) || File.Exists(file))
                 File.Create(file).Close();
-            StreamWriter sw = new StreamWriter(file);
-            sw.Write(Text);
-            sw.Close();
-            sw.Dispose();
-            MessageBox.Show($"Steam 用户 {Tusername.Text} 的数据已保存到桌面", "保存成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            using (var sw = new StreamWriter(file))
+            {
+                sw.Write(text);
+                sw.Close();
+            }
+
+            MessageBox.Show($"Steam 用户 {Tusername.Text} 的数据已保存到桌面", "保存成功", MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
+
         private void Button3_Click(object sender, EventArgs e)
         {
             if (Tinput.Text == "" || Tavator.Text == "")
@@ -314,6 +338,7 @@ namespace SteamUserData
                 MessageBox.Show("请输入SteamID请求数据后,再进行查看头像", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             using (var detailForm = new Form())
             {
                 Text = "Steam 头像查看器";
@@ -324,13 +349,11 @@ namespace SteamUserData
                 BackgroundImage = BackgroundImage;
                 BackgroundImageLayout = BackgroundImageLayout;
                 // TopMost = true;
-                WebBrowser webBrowser2 = new WebBrowser();
+                var webBrowser2 = new WebBrowser();
                 detailForm.Controls.Add(webBrowser2);
                 webBrowser2.Navigate(Tavator.Text);
                 webBrowser2.Dock = DockStyle.Fill;
                 detailForm.ShowDialog();
-                detailForm.FormClosed += (s, args) => detailForm.Dispose();
-
             }
         }
 
@@ -341,19 +364,18 @@ namespace SteamUserData
 
         private void TextBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                // 阻止默认行为（换行和提示音）
-                e.Handled = true;
+            if (e.KeyChar != (char)Keys.Enter)
+                return;
+            // 阻止默认行为（换行和提示音）
+            e.Handled = true;
 
-                // 触发 Button1 的点击事件
-                button1.PerformClick();
-            }
+            // 触发 Button1 的点击事件
+            button1.PerformClick();
         }
 
-        private void Turl_Click(object sender, EventArgs e) => Avator_Link(Turl.Text);
+        private void Turl_Click(object sender, EventArgs e) => Avatar_Link(Turl.Text);
 
-        private void Tavator_Click(object sender, EventArgs e) => Avator_Link(Tavator.Text);
+        private void Tavator_Click(object sender, EventArgs e) => Avatar_Link(Tavator.Text);
 
         private void label21_Click(object sender, EventArgs e) => TcommunityGroup_Click(sender, e);
     }

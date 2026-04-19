@@ -81,7 +81,7 @@ namespace SteamUserData
             this.pageHeader1.ShowIcon = true;
             this.pageHeader1.Size = new System.Drawing.Size(767, 32);
             this.pageHeader1.TabIndex = 32;
-            this.pageHeader1.Text = "Steam 公开摘要查询 - v1.6.4.2619";
+            this.pageHeader1.Text = "Steam 公开摘要查询 - v1.8.2.26420";
             // 
             // IInput
             // 
@@ -483,6 +483,7 @@ namespace SteamUserData
             this.MinimumSize = new System.Drawing.Size(767, 507);
             this.Mode = AntdUI.TAMode.Dark;
             this.Name = "Main";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Steam 公开摘要查询 - v1.6.4.2619";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
