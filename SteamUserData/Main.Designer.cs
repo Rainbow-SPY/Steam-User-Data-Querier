@@ -81,7 +81,7 @@ namespace SteamUserData
             this.pageHeader1.ShowIcon = true;
             this.pageHeader1.Size = new System.Drawing.Size(767, 32);
             this.pageHeader1.TabIndex = 32;
-            this.pageHeader1.Text = "Steam 公开摘要查询 - v1.8.2.26420";
+            this.pageHeader1.Text = "Steam 公开摘要查询 - v1.8.4.26425";
             // 
             // IInput
             // 
@@ -386,7 +386,7 @@ namespace SteamUserData
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(156, 55);
             this.panel1.TabIndex = 42;
-            this.panel1.Text = "panel1";
+            this.panel1.Text = "2";
             this.panel1.Visible = false;
             this.panel1.Click += new System.EventHandler(this.panel1_Click);
             // 

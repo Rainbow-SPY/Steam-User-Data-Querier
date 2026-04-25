@@ -11,14 +11,16 @@
     <StartupObject>SteamUserData.Program</StartupObject>
     <AssemblyName>Steam-User-Data-Querier</AssemblyName>
     <ApplicationIcon>978.ico</ApplicationIcon>
-    <Version>2.0.0</Version>
+    <Version>1.84.26425</Version>
     <Authors>Rainbow SPY</Authors>
     <Company>Rainbow SPY</Company>
-    <FileVersion>v2.0.0.26111-released</FileVersion>
-    <AssemblyVersion>2.0.1205.1557</AssemblyVersion>
+    <FileVersion>1.8.4.26425</FileVersion>
+    <AssemblyVersion>1.8.4.26425</AssemblyVersion>
     <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
-    <Title>不是有效的版本字符串</Title>
+    <Title>Steam User Data Querier</Title>
     <BaseOutputPath>D:\$Release\Steam User Querier</BaseOutputPath>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>uapi-sdk-csharp-key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>none</DebugType>

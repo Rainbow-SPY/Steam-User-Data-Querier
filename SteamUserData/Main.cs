@@ -2,11 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AntdUI;
 using Rox.Runtimes;
@@ -20,6 +16,7 @@ namespace SteamUserData
     public partial class Main : Window
     {
         private static Font CustomFont(int size = 10) => new Font("微软雅黑", size, FontStyle.Regular);
+        private static string ClanID;
 
         public Main()
         {
@@ -33,11 +30,11 @@ namespace SteamUserData
         private static void p(Form parent)
         {
             Thread.Sleep(1000);
-            var a = new Modal.Config(parent, "温馨提示", "如果遇到请求失败 TaskCanceled 取消了一个任务, 请等待1分钟后再次尝试, 已知问题已经在修复中...",
+            new Modal.Config(parent, "温馨提示", "如果遇到请求失败 TaskCanceled 取消了一个任务, 请等待1分钟后再次尝试, 已知问题已经在修复中...",
                 TType.Info)
             {
-                Font = CustomFont(10),
-                OkFont = CustomFont(10),
+                Font = CustomFont(),
+                OkFont = CustomFont(),
                 OkText = "我知道了",
                 MaskClosable = false,
                 Draggable = false,
@@ -49,67 +46,6 @@ namespace SteamUserData
             if (sender is Input textBox)
                 // 取消文本选择
                 textBox.SelectionLength = 0;
-        }
-
-        internal async Task<string> GetGroupTitle(string gid)
-        {
-            try
-            {
-                if (Rox.Runtimes.Network_I.GetPingDelay("steamcommunity.com", 1000) > 500)
-                {
-                    WriteLog.Error(LogKind.Network, "无法连接到 steamcommunity.com, 因为 DelayMs 大于 400ms");
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                WriteLog.Error(LogKind.Network, _Exception_With_xKind("测试网络时", ex));
-                return null;
-            }
-
-            try
-            {
-                var httpClient = new HttpClient(new HttpClientHandler
-                {
-                    AllowAutoRedirect = true,
-                    UseProxy = true,
-                    Proxy = WebRequest.GetSystemWebProxy()
-                });
-                httpClient.DefaultRequestHeaders.Add("User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
-
-                var response = await httpClient.GetAsync($"https://steamcommunity.com/gid/{gid}");
-                WriteLog.Info(LogKind.Network, $"请求 URL: https://steamcommunity.com/gid/{gid}");
-                if (!response.IsSuccessStatusCode)
-                {
-                    WriteLog.Error(LogKind.Network, $"请求失败: {response.StatusCode}, {_HttpClient_Request_Failed}");
-                    return null;
-                }
-
-                WriteLog.Info(LogKind.Network, $"最终请求的 URL: {response.RequestMessage.RequestUri}");
-                // 使用正则表达式提取<title>标签内容
-                var match = Regex.Match(await response.Content.ReadAsStringAsync(), @"<title>(.*?)</title>",
-                    RegexOptions.IgnoreCase);
-                if (!match.Success)
-                    return "未匹配到结果";
-
-                var groupName = match.Groups[1].Value.Trim()
-                    .Split(new[] { "::" }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.Trim();
-
-                if (groupName == "Error")
-                    return "未匹配到结果";
-                WriteLog.Info(LogKind.Regex, $"获取到的群组名称: {groupName}");
-#if DEBUG
-                MessageBox_I.Info($"获取到的群组名称: {groupName}", _TIPS);
-#endif
-
-                return groupName;
-            }
-            catch (Exception ex)
-            {
-                WriteLog.Error(_Exception_With_xKind("获取群组标题", ex));
-                return null;
-            }
         }
 
         public Input[] inputs() => new[]
@@ -131,6 +67,7 @@ namespace SteamUserData
             ARegistryRegion.Icon = TType.Info;
             ARegistryRegion.Text = "";
             ARegistryRegion.Hide();
+            panel1.Hide();
         }
 
         private async void GetData_Click(object sender, EventArgs e)
@@ -153,6 +90,7 @@ namespace SteamUserData
                     IUsername.Text = steamType.Name;
                     ISteamID3.Text = steamType.SteamID3;
                     ICMGroupID.Text = steamType.PrimaryClanID;
+                    ClanID = steamType.PrimaryClanID;
                     IFriendCode.Text = steamType.FriendCode;
                     ISteamID.Text = steamType.SteamID1;
                     ISteamID64.Text = steamType.SteamID64;
@@ -160,6 +98,7 @@ namespace SteamUserData
                     IAccountCreatedStr.Text = steamType.RegisterTime;
                     foreach (var i in alerts())
                         i.Show();
+                    panel1.Show();
                     ASteamCMVisibility.Icon = steamType.IsCommunityVisibility
                         ? TType.Success
                         : TType.Error;
@@ -175,10 +114,9 @@ namespace SteamUserData
                         ? TType.Error
                         : TType.Success;
                     AOnlineStatus.Text = steamType.PersonaState;
-                    ARegistryRegion.Text = A(steamType.BindLocationRegionCode) == null
-                        ? "未知"
-                        : A(steamType.BindLocationRegionCode);
-                    ARegistryRegion.Icon = string.IsNullOrWhiteSpace(A(steamType.BindLocationRegionCode))
+                    var value = A(steamType.BindLocationRegionCode);
+                    ARegistryRegion.Text = value ?? "未知";
+                    ARegistryRegion.Icon = string.IsNullOrWhiteSpace(value)
                         ? TType.Error
                         : TType.Success;
                 }
@@ -247,6 +185,22 @@ namespace SteamUserData
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
+            if (ClanID != null)
+            {
+                var url = $"https://steamcommunity.com/gid/{ClanID}";
+                Process.Start(url);
+            }
+
+            else
+            {
+                new Modal.Config(this, "错误的gid", "gid == null", TType.Error)
+                {
+                    OkFont = CustomFont(),
+                    CancelFont = CustomFont(),
+                    Mask = false,
+                    MaskClosable = false
+                }.open();
+            }
         }
 
         private void label9_Click(object sender, EventArgs e) => pictureBox1_Click(sender, e);
